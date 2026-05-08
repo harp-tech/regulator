@@ -1,0 +1,67 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Cross-platform launcher for Harp device GUI applications.</Description>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <TargetFramework>net8.0</TargetFramework>
+    <OutputType>WinExe</OutputType>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\logo.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <CFBundleName>$(MSBuildProjectName)</CFBundleName>
+    <CFBundleDisplayName>$(MSBuildProjectName)</CFBundleDisplayName>
+    <CFBundleIdentifier>org.harp-tech</CFBundleIdentifier>
+    <CFBundleVersion Condition="'$(CiBuildVersion)' != ''">$(CiBuildVersion)</CFBundleVersion>
+    <CFBundleShortVersionString Condition="'$(CiBuildVersion)' != ''">$(CiBuildVersion)</CFBundleShortVersionString>
+    <CFBundlePackageType>AAPL</CFBundlePackageType>
+    <CFBundleSignature>.</CFBundleSignature>
+    <CFBundleExecutable>$(MSBuildProjectName)</CFBundleExecutable>
+    <CFBundleIconFile>logo.icns</CFBundleIconFile>
+    <NSPrincipalClass>NSApplication</NSPrincipalClass>
+    <NSHighResolutionCapable>true</NSHighResolutionCapable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+
+  <Target Name="CopyAssets" AfterTargets="Build">
+    <Copy SourceFiles="Assets\logo.icns" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="Assets\logo.ico" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="Assets\logo.icns" DestinationFolder="$(PublishDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="Assets\logo.ico" DestinationFolder="$(PublishDir)" SkipUnchangedFiles="true" />
+  </Target>
+
+  <UsingTask
+    Condition="$(RuntimeIdentifier.StartsWith('osx'))"
+    TaskName="NeoBundle.BundleAppTask"
+    AssemblyFile="$(PkgNeoBundle)/lib/netstandard2.1/NeoBundle.dll" />
+
+  <Target
+    Name="BundleMacApp"
+    AfterTargets="Publish"
+    Condition="$(RuntimeIdentifier.StartsWith('osx'))">
+    <BundleAppTask
+      OutDir="$(OutDir)"
+      Version="$(Version)"
+      Authors="$(Authors)"
+      PublishDir="$(PublishDir)"
+      AppName="$(AssemblyName)"
+      IconFile="logo.icns"
+      Copyright="$(Copyright)"/>
+  </Target>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Markdown.Avalonia" Version="11.0.2" />
+    <PackageReference Include="ReactiveUI.Fody" Version="19.5.41" />
+    <PackageReference Condition="$(RuntimeIdentifier.StartsWith('osx'))" Include="NeoBundle" Version="1.0.3.1" ExcludeAssets="build;buildTransitive" GeneratePathProperty="true" />
+  </ItemGroup>
+</Project>

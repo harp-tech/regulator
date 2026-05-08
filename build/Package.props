@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <PackageTags>Harp Regulator</PackageTags>
+    <PackageProjectUrl>https://harp-tech.org/regulator</PackageProjectUrl>
+
+    <Authors>harp-tech</Authors>
+    <Copyright>Copyright © harp-tech and Contributors</Copyright>
+  </PropertyGroup>
+</Project>

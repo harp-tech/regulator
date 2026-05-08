@@ -1,0 +1,17 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Harp.Regulator.App"
+             RequestedThemeVariant="Default"
+             Name="Harp.Regulator">
+  <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+  <Application.Styles>
+    <FluentTheme />
+    <StyleInclude Source="avares://Harp.Regulator/Styles/DefaultStyles.axaml" />
+  </Application.Styles>
+
+  <NativeMenu.Menu>
+    <NativeMenu>
+      <NativeMenuItem Header="About Harp.Regulator" Click="NativeMenuItem_OnClick" />
+    </NativeMenu>
+  </NativeMenu.Menu>
+</Application>
