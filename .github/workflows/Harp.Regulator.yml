@@ -113,6 +113,8 @@ jobs:
       - name: Build NSIS installer
         if: matrix.rid == 'win-x64'
         shell: bash
+        env:
+          MSYS_NO_PATHCONV: 1
         run: |
           makensis \
             "/DVERSION_MAJOR=${{steps.version.outputs.major}}" \
