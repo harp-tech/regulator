@@ -89,7 +89,9 @@ jobs:
       # ----------------------------------------------------------------------- Package: Windows installer + portable ZIP
       - name: Set up NSIS
         if: matrix.rid == 'win-x64'
-        run: choco install -y nsis
+        run: |
+          choco install -y nsis --no-progress
+          "${env:ProgramFiles(x86)}\NSIS" | Out-File -FilePath $env:GITHUB_PATH -Append
 
       - name: Parse version components
         if: matrix.rid == 'win-x64'
