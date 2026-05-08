@@ -200,29 +200,12 @@ jobs:
         id: configure-build
         uses: bonsai-rx/configure-build@v1
 
-      # ----------------------------------------------------------------------- Restore
-      - name: Restore
-        run: dotnet restore
-
-      # ----------------------------------------------------------------------- Build metadata
-      - name: Build metadata
-        id: build-metadata
-        run: dotnet docfx metadata docs/docfx.json --noRestore
-
       # ----------------------------------------------------------------------- Build documentation
       - name: Build documentation
         id: build-documentation
         run: dotnet docfx build docs/docfx.json
 
       # ----------------------------------------------------------------------- Collect artifacts
-      - name: Collect documentation metadata
-        uses: actions/upload-artifact@v4
-        if: steps.build-metadata.outcome == 'success' && always()
-        with:
-          name: DocumentationMetadata
-          if-no-files-found: error
-          path: artifacts/docs/api/
-
       - name: Collect documentation artifact
         uses: actions/upload-artifact@v4
         if: steps.build-documentation.outcome == 'success' && always()

@@ -7,7 +7,6 @@ $PSNativeCommandUseErrorActionPreference = $true
 
 Push-Location $PSScriptRoot
 try {
-    dotnet docfx metadata
     dotnet docfx build $docfxArgs
 } finally {
     Pop-Location
