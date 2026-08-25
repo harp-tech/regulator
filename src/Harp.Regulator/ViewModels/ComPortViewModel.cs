@@ -1,4 +1,4 @@
-using ReactiveUI;
+﻿using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
 namespace Harp.Regulator.ViewModels;
