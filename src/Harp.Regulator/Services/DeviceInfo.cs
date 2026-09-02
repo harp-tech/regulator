@@ -9,4 +9,10 @@ public sealed record DeviceInfo(
     int WhoAmI,
     string DeviceName,
     HarpVersion HardwareVersion,
-    HarpVersion FirmwareVersion);
+    HarpVersion FirmwareVersion)
+{
+    public override string ToString()
+    {
+        return $"{DeviceName}, WhoAmI {WhoAmI}, firmware {FirmwareVersion}, hardware {HardwareVersion}";
+    }
+}
