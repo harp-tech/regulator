@@ -15,6 +15,8 @@ public class MainViewModel : ViewModelBase
 
     private readonly DeviceAppLauncher appLauncher = new();
 
+    private ProbingPort? probingPort;
+
     public ObservableCollection<ComPortViewModel> Ports { get; } = new();
 
     [Reactive] public ComPortViewModel? SelectedPort { get; set; }
@@ -41,17 +43,32 @@ public class MainViewModel : ViewModelBase
 
     private IObservable<(ComPortViewModel Port, string Status, DeviceInfo? Info)> ProbePort(ComPortViewModel? port)
     {
+        RestoreAbandonedProbe();
         if (port is null)
             return Observable.Empty<(ComPortViewModel, string, DeviceInfo?)>();
 
+        probingPort = new ProbingPort(port, port.Status, port.Info);
         port.Status = ProbingStatus;
         port.Info = null;
+        port.RefreshAppState();
         return Observable
             .FromAsync(cancellationToken => DeviceProbe.ProbePortAsync(port.PortName, cancellationToken))
             .Select(result => (port, DescribeProbeResult(result), result.Info))
             .Catch((Exception ex) => ex is OperationCanceledException
                 ? Observable.Empty<(ComPortViewModel, string, DeviceInfo?)>()
                 : Observable.Return((port, ex.Message, (DeviceInfo?)null)));
+    }
+
+    private void RestoreAbandonedProbe()
+    {
+        var abandoned = probingPort;
+        probingPort = null;
+        if (abandoned is null || abandoned.Port.Status != ProbingStatus)
+            return;
+
+        abandoned.Port.Status = abandoned.PreviousStatus;
+        abandoned.Port.Info = abandoned.PreviousInfo;
+        abandoned.Port.RefreshAppState();
     }
 
     private static string DescribeProbeResult(DeviceProbeResult result)
@@ -73,4 +90,6 @@ public class MainViewModel : ViewModelBase
 
         SelectedPort = Ports.FirstOrDefault(port => port.PortName == selectedPortName);
     }
+
+    record ProbingPort(ComPortViewModel Port, string PreviousStatus, DeviceInfo? PreviousInfo);
 }

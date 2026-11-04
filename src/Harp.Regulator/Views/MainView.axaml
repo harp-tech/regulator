@@ -31,8 +31,9 @@
                          TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="0,0,8,0" />
               <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4">
                 <Button Content="Download" Command="{Binding Download}" Padding="8,2"
-                        ToolTip.Tip="{Binding DownloadHint}" />
-                <Button Content="Launch" Command="{Binding Launch}" Padding="8,2" />
+                        IsVisible="{Binding CanDownload}" ToolTip.Tip="{Binding DownloadHint}" />
+                <Button Content="Launch" Command="{Binding Launch}" Padding="8,2"
+                        IsVisible="{Binding CanLaunch}" />
               </StackPanel>
             </Grid>
           </DataTemplate>

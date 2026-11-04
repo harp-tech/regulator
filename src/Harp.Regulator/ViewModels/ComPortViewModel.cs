@@ -21,14 +21,11 @@ public class ComPortViewModel : ReactiveObject
 
         Download = ReactiveCommand.CreateFromTask(
             DownloadAsync,
-            this.WhenAnyValue(
-                port => port.Info,
-                port => port.IsDownloaded,
-                (info, downloaded) => info is not null && !downloaded));
+            this.WhenAnyValue(port => port.CanDownload));
 
         Launch = ReactiveCommand.Create(
             LaunchApp,
-            this.WhenAnyValue(port => port.IsDownloaded));
+            this.WhenAnyValue(port => port.CanLaunch));
     }
 
     [Reactive] public string PortName { get; set; }
@@ -41,6 +38,10 @@ public class ComPortViewModel : ReactiveObject
 
     [Reactive] public bool NeedsNetwork { get; set; }
 
+    [Reactive] public bool CanDownload { get; set; }
+
+    [Reactive] public bool CanLaunch { get; set; }
+
     [Reactive] public string DownloadHint { get; set; } = string.Empty;
 
     [Reactive] public string Provenance { get; set; } = string.Empty;
@@ -52,10 +53,12 @@ public class ComPortViewModel : ReactiveObject
     public void RefreshAppState()
     {
         var info = Info;
+        var appAvailable = info is not null && appLauncher.DescribeUnavailable(info) is null;
         IsDownloaded = info is not null && appLauncher.IsInstalled(info);
         NeedsNetwork = info is not null && appLauncher.NeedsNetwork(info);
-        DownloadHint = info is null ? string.Empty
-            : IsDownloaded ? "Already downloaded."
+        CanDownload = appAvailable && !IsDownloaded;
+        CanLaunch = IsDownloaded;
+        DownloadHint = !CanDownload ? string.Empty
             : NeedsNetwork ? "Will download from a configured package source."
             : "Already in the local package cache, so no download is needed.";
         Provenance = DescribeProvenance(info);
