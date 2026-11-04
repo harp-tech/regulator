@@ -3,9 +3,8 @@
 namespace Harp.Regulator.Services;
 
 /// <summary>
-/// Represents the app registered for a device, as the distribution channels declared by the
-/// registry, keyed by channel name. Channels are carried even when this launcher cannot start
-/// them, so that a device with an unsupported app is not reported as having none.
+/// Represents the app registered for a device, as its distribution channels keyed by channel name.
+/// Channels this launcher cannot start are included.
 /// </summary>
 public sealed record DeviceApp(IReadOnlyDictionary<string, string> Channels)
 {

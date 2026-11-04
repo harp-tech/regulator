@@ -3,7 +3,7 @@
 namespace Harp.Regulator.Services;
 
 /// <summary>
-/// Represents core register values read from a Harp device when probing a serial port.
+/// Represents the core register values read from a Harp device.
 /// </summary>
 public sealed record DeviceInfo(
     int WhoAmI,

@@ -8,9 +8,7 @@ using YamlDotNet.Serialization.NamingConventions;
 namespace Harp.Regulator.Services;
 
 /// <summary>
-/// Resolves the app registered for a device identity. Entries are read from a local file
-/// in the WhoAmI registry format, so that a device under development can be declared before it is
-/// registered.
+/// Resolves the app registered for a device identity.
 /// </summary>
 public class DeviceRegistry
 {

@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Description>Cross-platform launcher for Harp device GUI applications.</Description>
+    <Description>Cross-platform launcher for Harp device apps.</Description>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <TargetFramework>net8.0</TargetFramework>

@@ -33,7 +33,7 @@ public class DeviceAppLauncher
         """;
 
     /// <summary>
-    /// Gets a value indicating whether a device app started by this launcher is still running on
+    /// Returns a value indicating whether a device app started by this launcher is still running on
     /// the specified port.
     /// </summary>
     public bool IsRunning(string portName)
@@ -50,8 +50,8 @@ public class DeviceAppLauncher
     }
 
     /// <summary>
-    /// Gets a value indicating whether the device app matching the specified device is already in
-    /// a local manifest, so that it can be started without installing anything.
+    /// Returns a value indicating whether the device app that matches the specified device is already
+    /// installed.
     /// </summary>
     public bool IsInstalled(DeviceInfo info)
     {
@@ -61,9 +61,8 @@ public class DeviceAppLauncher
     }
 
     /// <summary>
-    /// Gets a value indicating whether installing the device app matching the specified device
-    /// would have to download from a package source, rather than resolving from the local
-    /// package cache.
+    /// Returns a value indicating whether installing the device app that matches the specified device
+    /// requires a download from a package source.
     /// </summary>
     public bool NeedsNetwork(DeviceInfo info)
     {
@@ -79,9 +78,8 @@ public class DeviceAppLauncher
     }
 
     /// <summary>
-    /// Gets what is known about the device app matching the specified device, or
-    /// <see langword="null"/> if no app is registered for it. Author details are read from the
-    /// downloaded package, so they are absent until the app has been downloaded.
+    /// Gets what is known about the device app that matches the specified device, or
+    /// <see langword="null"/> if no app is registered for it.
     /// </summary>
     public AppProvenance? GetProvenance(DeviceInfo info)
     {
@@ -139,9 +137,8 @@ public class DeviceAppLauncher
     }
 
     /// <summary>
-    /// Installs the device app matching the specified device into a manifest of its own, without
-    /// starting it. Returns a message describing the step that failed, or <see langword="null"/>
-    /// on success.
+    /// Installs the device app that matches the specified device without starting it. Returns a
+    /// description of the step that failed, or <see langword="null"/> on success.
     /// </summary>
     public async Task<string?> DownloadAsync(DeviceInfo info, CancellationToken cancellationToken = default)
     {
@@ -173,9 +170,9 @@ public class DeviceAppLauncher
     }
 
     /// <summary>
-    /// Starts the already installed device app matching the specified device, passing the port to
-    /// open. Returns a message describing why the app was not started, or
-    /// <see langword="null"/> if it was started or was already running on that port.
+    /// Starts the installed device app that matches the specified device on the specified port.
+    /// Returns a description of why the app was not started, or <see langword="null"/> if it was
+    /// started or was already running on that port.
     /// </summary>
     public string? Launch(string portName, DeviceInfo info)
     {

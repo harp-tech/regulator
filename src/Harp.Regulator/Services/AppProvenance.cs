@@ -3,9 +3,8 @@
 namespace Harp.Regulator.Services;
 
 /// <summary>
-/// Represents what is known about the device app matching a device. The author details are read
-/// from the downloaded package, so they are absent before the app is downloaded, and absent
-/// altogether when the channel does not carry them.
+/// Represents what is known about the device app that matches a device. The authors, license and
+/// project page are available only once the app is downloaded.
 /// </summary>
 public sealed record AppProvenance(
     string PackageId,
