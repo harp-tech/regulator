@@ -1,14 +1,14 @@
 # Harp Regulator
 
-A cross-platform launcher for Harp device apps. Discover connected devices, install the matching app, and launch it.
-
-## Overview
-
-Harp device apps are published as `dotnet` tool packages on NuGet. `Harp.Regulator` enumerates available serial ports, identifies connected Harp devices through the `WhoAmI` register, looks up the app registered for each device, installs the matching app version on demand, and launches it.
+A cross-platform launcher for Harp device apps. It identifies the Harp device on a serial port, installs the app registered for that device, and launches it.
 
 ## Installation
 
-Download the installer for Windows, Linux, or macOS from the [Releases](https://github.com/harp-tech/regulator/releases) page and run it.
+Download the installer for Windows, Linux, or macOS from the [Releases](https://github.com/harp-tech/regulator/releases) page and run it. Installing device apps also requires the [.NET SDK](https://dotnet.microsoft.com/download), version 8 or later.
+
+## Documentation
+
+For usage and further details, refer to the [Harp Regulator documentation](https://harp-tech.org/regulator).
 
 ## Building from source
 
