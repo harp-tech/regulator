@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reactive;
 using System.Threading.Tasks;
 using Harp.Regulator.Services;
+using Harp.Toolkit;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
@@ -32,9 +33,11 @@ public class ComPortViewModel : ReactiveObject
 
     [Reactive] public string Status { get; set; } = string.Empty;
 
-    [Reactive] public DeviceInfo? Info { get; set; }
+    [Reactive] public DeviceIdentity? Info { get; set; }
 
     [Reactive] public bool IsDownloaded { get; set; }
+
+    [Reactive] public bool IsRunning { get; set; }
 
     [Reactive] public bool NeedsNetwork { get; set; }
 
@@ -55,16 +58,17 @@ public class ComPortViewModel : ReactiveObject
         var info = Info;
         var appAvailable = info is not null && appLauncher.DescribeUnavailable(info) is null;
         IsDownloaded = info is not null && appLauncher.IsInstalled(info);
+        IsRunning = appLauncher.IsRunning(PortName);
         NeedsNetwork = info is not null && appLauncher.NeedsNetwork(info);
         CanDownload = appAvailable && !IsDownloaded;
-        CanLaunch = IsDownloaded;
+        CanLaunch = IsDownloaded && !IsRunning;
         DownloadHint = !CanDownload ? string.Empty
             : NeedsNetwork ? "Will download from a configured package source."
             : "Already in the local package cache, so no download is needed.";
         Provenance = DescribeProvenance(info);
     }
 
-    private string DescribeProvenance(DeviceInfo? info)
+    private string DescribeProvenance(DeviceIdentity? info)
     {
         if (info is null)
             return string.Empty;
@@ -109,7 +113,7 @@ public class ComPortViewModel : ReactiveObject
         Status = DownloadingStatus;
         var error = await appLauncher.DownloadAsync(info);
         RefreshAppState();
-        Status = error ?? info.ToString();
+        Status = error ?? info.Describe();
     }
 
     private void LaunchApp()
@@ -119,6 +123,7 @@ public class ComPortViewModel : ReactiveObject
             return;
 
         var error = appLauncher.Launch(PortName, info);
+        RefreshAppState();
         if (error is not null)
             Status = error;
     }

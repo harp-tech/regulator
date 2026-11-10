@@ -34,6 +34,8 @@
                         IsVisible="{Binding CanDownload}" ToolTip.Tip="{Binding DownloadHint}" />
                 <Button Content="Launch" Command="{Binding Launch}" Padding="8,2"
                         IsVisible="{Binding CanLaunch}" />
+                <TextBlock Text="Running" Opacity="0.7" VerticalAlignment="Center"
+                           IsVisible="{Binding IsRunning}" />
               </StackPanel>
             </Grid>
           </DataTemplate>

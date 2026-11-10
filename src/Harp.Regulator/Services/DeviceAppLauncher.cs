@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Harp.Toolkit;
 
 namespace Harp.Regulator.Services;
 
@@ -15,6 +16,11 @@ public class DeviceAppLauncher
 {
     readonly Dictionary<string, Process> runningApps = new(StringComparer.OrdinalIgnoreCase);
     readonly DeviceRegistry registry = new();
+
+    /// <summary>
+    /// Occurs when a device app started by this launcher exits, with the name of its port.
+    /// </summary>
+    public event Action<string>? AppExited;
 
     const string HarpDirectoryName = ".harp";
     const string FeedVariable = "HARP_REGULATOR_FEED";
@@ -53,7 +59,7 @@ public class DeviceAppLauncher
     /// Returns a value indicating whether the device app that matches the specified device is already
     /// installed.
     /// </summary>
-    public bool IsInstalled(DeviceInfo info)
+    public bool IsInstalled(DeviceIdentity info)
     {
         var location = ResolveDotnetToolLocation(info);
         return location is not null
@@ -64,7 +70,7 @@ public class DeviceAppLauncher
     /// Returns a value indicating whether installing the device app that matches the specified device
     /// requires a download from a package source.
     /// </summary>
-    public bool NeedsNetwork(DeviceInfo info)
+    public bool NeedsNetwork(DeviceIdentity info)
     {
         var location = ResolveDotnetToolLocation(info);
         if (location is null)
@@ -81,7 +87,7 @@ public class DeviceAppLauncher
     /// Gets what is known about the device app that matches the specified device, or
     /// <see langword="null"/> if no app is registered for it.
     /// </summary>
-    public AppProvenance? GetProvenance(DeviceInfo info)
+    public AppProvenance? GetProvenance(DeviceIdentity info)
     {
         var location = ResolveDotnetToolLocation(info);
         if (location is null)
@@ -140,7 +146,7 @@ public class DeviceAppLauncher
     /// Installs the device app that matches the specified device without starting it. Returns a
     /// description of the step that failed, or <see langword="null"/> on success.
     /// </summary>
-    public async Task<string?> DownloadAsync(DeviceInfo info, CancellationToken cancellationToken = default)
+    public async Task<string?> DownloadAsync(DeviceIdentity info, CancellationToken cancellationToken = default)
     {
         var location = ResolveDotnetToolLocation(info);
         if (location is null)
@@ -174,7 +180,7 @@ public class DeviceAppLauncher
     /// Returns a description of why the app was not started, or <see langword="null"/> if it was
     /// started or was already running on that port.
     /// </summary>
-    public string? Launch(string portName, DeviceInfo info)
+    public string? Launch(string portName, DeviceIdentity info)
     {
         if (IsRunning(portName))
             return null;
@@ -193,7 +199,7 @@ public class DeviceAppLauncher
     /// Describes why no app can be started for the specified device, or <see langword="null"/> if
     /// one can be.
     /// </summary>
-    public string? DescribeUnavailable(DeviceInfo info)
+    public string? DescribeUnavailable(DeviceIdentity info)
     {
         var app = registry.FindApp(info.WhoAmI);
         if (app is null)
@@ -221,7 +227,7 @@ public class DeviceAppLauncher
         return null;
     }
 
-    DotnetToolLocation? ResolveDotnetToolLocation(DeviceInfo info)
+    DotnetToolLocation? ResolveDotnetToolLocation(DeviceIdentity info)
     {
         var app = registry.FindApp(info.WhoAmI);
         var packageId = app is null ? null : FindRunnableChannel(app);
@@ -368,6 +374,8 @@ public class DeviceAppLauncher
             if (process is null)
                 return $"Failed to start {command}.";
 
+            process.EnableRaisingEvents = true;
+            process.Exited += (_, _) => AppExited?.Invoke(portName);
             runningApps[portName] = process;
             return null;
         }
