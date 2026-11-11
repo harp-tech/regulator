@@ -1,4 +1,4 @@
-namespace Harp.Regulator.ViewModels;
+﻿namespace Harp.Regulator.ViewModels;
 
 internal class AboutViewModel : ViewModelBase
 {
